@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=CDDA-Ripper
+Exec=cddaripper
+Icon=${SNAP}/cddaripper.png
+Terminal=false
+Type=Application
+Categories=Audio;AudioVideo;

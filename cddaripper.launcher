@@ -1,0 +1,4 @@
+#!/bin/bash
+export APP_ID=cddaripper
+# Launch the GUI
+exec "$SNAP/bin/desktop-launch" $SNAP/usr/bin/cddaripper "$@"

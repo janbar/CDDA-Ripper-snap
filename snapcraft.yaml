@@ -1,0 +1,125 @@
+name: cdda-ripper
+version: "1.4.0"
+license: "GPL-2.0-or-later"
+summary: An easy to use audio CD ripping application
+icon: cddaripper.png
+description: |
+  CDDA-Ripper is an audio grabber tool for CD-ROM drives.
+  The main goal is to provide an even easier-to-use tool.
+  Data are fetched from MusicBrainz, and covers are downloaded from the DEEZER services.
+  Alternatively, you can drag and drop the cover of your choice.
+
+  The SNAP requires the following connections to work properly...
+
+  snap connect cdda-ripper:optical-write && snap connect cdda-ripper:udisks2
+
+issues:
+  - https://github.com/janbar/CDDA-Ripper/issues
+source-code:
+  - https://github.com/janbar/CDDA-Ripper
+grade: stable
+base: core22
+confinement: strict
+platforms:
+  amd64:
+  arm64:
+
+plugs:
+  optical-write:
+    interface: optical-drive
+    write: true
+
+apps:
+  cdda-ripper:
+    command: bin/cddaripper.launcher
+    plugs:
+      - home
+      - optical-drive
+      - optical-write
+      - udisks2
+      - wayland
+      - x11
+      - unity7
+      - opengl
+      - network
+
+layout:
+
+slots:
+
+parts:
+  desktop-qt5:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-type: git
+    source-commit: 622e2aa7a840b3a7dbb6ea4d432d687d5cc2e8ef
+    source-subdir: qt/
+    plugin: make
+    make-parameters: ["FLAVOR=qt5"]
+    build-packages:
+      - qtbase5-dev
+      - dpkg-dev
+    stage-packages:
+      - libxkbcommon0
+      - dmz-cursor-theme
+      - light-themes
+      - shared-mime-info
+      - libgtk2.0-0
+      - libgdk-pixbuf2.0-0
+      - locales-all
+
+  cdda-ripper:
+    source: https://github.com/janbar/cdda-ripper.git
+    source-type: git
+    source-commit: 89ffb56d99c54024035ef0da67091eb07a2d19a5
+    source-depth: 1
+    plugin: cmake
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+      - -DCMAKE_BUILD_TYPE=Release
+    build-packages:
+      - build-essential
+      - cmake
+      - flex
+      - bison
+      - qtbase5-dev
+      - qttools5-dev
+      - qttools5-dev-tools
+      - zlib1g-dev
+      - libssl-dev
+      - qtwayland5
+      - libqt5gui5
+      - libqt5widgets5
+      - libqt5dbus5
+      - libqt5xml5
+      - libqt5svg5
+      - libqt5network5
+      - libdbus-1-dev
+      - libmusicbrainz5-dev
+      - libcdparanoia-dev
+
+    stage-packages:
+      - qtwayland5
+      - libqt5gui5
+      - libqt5widgets5
+      - libqt5dbus5
+      - libqt5xml5
+      - libqt5svg5
+      - libqt5network5
+      - qttranslations5-l10n
+      - zlib1g
+      - libssl3
+      - libdbus-1-3
+      - libmusicbrainz5cc2v5
+      - libcdparanoia0
+      - flac
+      - vorbis-tools
+      - lame
+      - faac
+      - opus-tools
+    after: [desktop-qt5]
+
+  environment:
+    source: .
+    plugin: dump
+    organize:
+      cddaripper.launcher: bin/cddaripper.launcher
